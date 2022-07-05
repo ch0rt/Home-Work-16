@@ -278,12 +278,12 @@ class GITCViewController {
     var view: Vieew
     var navigationTitle: String
     
-//    init(frame: Rect = Rect(weight: 0, height: 0), navigationTitle: String = "no") {     // new
-//
-//        self.view = Vieew(frame: frame)
-//        self.navigationTitle = navigationTitle
-//
-//    }
+    init(frame: Rect = Rect(weight: 0, height: 0), navigationTitle: String = "no") {
+
+        self.view = Vieew(frame: frame)
+        self.navigationTitle = navigationTitle
+
+    }
     
     init() {
 
@@ -307,8 +307,10 @@ class GITCViewController {
 let example = GITCViewController(frame: Rect(origin: Point(x: 7, y: 7), weight: 7, height: 7))
 //print(example.view.frame)
 
-let a = GITCViewController(navigationTitle: "kkkk")
-//print(a.view.frame, a.navigationTitle)
+
+
+let a = GITCViewController(frame: Rect(origin: Point(x: 1, y: 1), weight: 1, height: 1) )
+print( a.navigationTitle)
 
 
 
@@ -340,6 +342,7 @@ struct PhoneNumber {
         }
         self.init(code: "+374", number: number)
     }
+    
 }
 
 let numberObj = PhoneNumber(number: "94333258")
@@ -352,23 +355,54 @@ if let numbers = numberObj {
 //4. Ստեղծել Class CallManager անունով (հետևյալ փրոփրտիներով callFrom: PhoneNumber, callTo: PhoneNumber)
 //որը պետք է ունենա հետևյալ init-ները`
 //- init?(callFrom: PhoneNumber?, callTo: PhoneNumber?) callFrom և callTo չեն կարող լինել nil
+
 //- Init?(callFrom: String, callTo: String) code- ի երկարությունը 4 է,  callFrom և callTo չեն կարող լինել դատարկ
 
 
 class CallManager {
+    
     var callFrom: PhoneNumber
     var callTo: PhoneNumber
 
+    func getCodeAndNumber(_ phoneNumber: String) -> PhoneNumber {
+
+        let myIndex = phoneNumber.index(phoneNumber.startIndex, offsetBy: 4)
+
+        let cod = String(phoneNumber[phoneNumber.startIndex..<myIndex])
+        let num = String(phoneNumber[myIndex...phoneNumber.index(before: phoneNumber.endIndex)])
+
+            return PhoneNumber(code: cod, number: num)!
+       }
+
     init?(callFrom: PhoneNumber?, callTo: PhoneNumber?) {
-        
-        if callFrom == nil || callTo == nil {return nil}
+        if callFrom == nil || callTo == nil {
+            return nil
+        }
         self.callFrom = callFrom!
         self.callTo = callTo!
     }
 
+    init?(callFrom: String, callTo: String) {
+
+        if callFrom.hasPrefix("+") && callFrom.count > 0, callTo.hasPrefix("+") && callTo.count > 0 {
+
+            self.callFrom = PhoneNumber(code: callFrom, number: callFrom)!
+            self.callTo = PhoneNumber(code: callTo, number: callTo)!
+
+            self.callFrom = getCodeAndNumber(callFrom)
+            self.callTo = getCodeAndNumber(callTo)
+
+        } else {
+            return nil
+        }
+    }
 }
 
+let objjj = CallManager(callFrom: "+37633445566", callTo: "+34599008877")
 
+if let objaa = objjj {
+    print(objaa.callTo)
+}
 
 
 //5. Ստեղծել Enum RequestMethod անունով հետևյալ հավանական արժեքներով post, get, delete
@@ -378,7 +412,6 @@ enum RequestMethod {
     case get
     case delete
 }
-
 
 
 //6. Ստեղծել Class LoadDataFromServer անունով  (հետևյալ փրոփրտիներով requestUrl: String, requestMethod: RequestMethod)
